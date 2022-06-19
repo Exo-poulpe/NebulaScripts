@@ -229,7 +229,7 @@ def get_groups_from_database(username:str) -> str:
     try:
         rqst = f"SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id == \"{username}\" );"
         cursor.execute(f"{rqst}")
-    except Any as err:
+    except Exception as err:
         print(f"Error {err}")
         data = None
         return data
