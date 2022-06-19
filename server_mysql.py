@@ -79,9 +79,11 @@ def cert():
     # str(file_byte).save(secure_filename(f"{current_user}.pub"))
     file_name = f"{current_user}.pub"
     open(file_name,"wb").write(file_byte)
+    
     # print(f"{get_groups_from_database(current_user)}")
-    print(",".join(get_groups_from_database(current_user)))
-    fingerprint = create_cert(file_name,current_user,",".join(get_groups_from_database(current_user)),f"192.168.1.{database_user_id(current_user)}/24")
+    
+    print([''.join(i) for i in get_groups_from_database(current_user)])
+    fingerprint = create_cert(file_name,current_user,[''.join(i) for i in get_groups_from_database(current_user)]),f"192.168.1.{database_user_id(current_user)}/24")
     print(fingerprint)
     database_user_fingerprint(current_user,fingerprint)
     print("db update")
@@ -227,7 +229,9 @@ def get_groups_from_database(username:str) -> str:
     cursor = dataBase.cursor()
     data = ""
     try:
-        rqst = f"SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id == \"{username}\" );"
+
+        # SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id = "54c914d9-1839-48bd-bb83-703ba47ded46" );
+        rqst = f"SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id = \"{username}\" );"
         cursor.execute(f"{rqst}")
     except Exception as err:
         print(f"Error {err}")
