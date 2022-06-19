@@ -162,7 +162,7 @@ def database_to_config(username:str) -> None:
 def get_lan_ip() -> str:
     res = ""
     link = netifaces.ifaddresses('eth0')[netifaces.AF_INET]
-    return link['addr']
+    return str(link['addr'])
 
 def database_user_already_sign(username:str) -> bool:
     # connection=sqlite3.connect(DB_NAME)
