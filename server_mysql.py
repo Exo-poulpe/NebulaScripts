@@ -10,15 +10,25 @@ import uuid
 import flask
 import subprocess
 import bcrypt
-import sqlite3
 import json
 import argparse
 import netifaces
-
+import atexit
+import mysql.connector
+  
 config_lnk = "https://raw.githubusercontent.com/Exo-poulpe/NebulaConfig/main/config.orig.yaml"
 DB_PORT = 3306
 DB_HOST = "192.168.122.22"
 DB_NAME = "databses.db"
+
+dataBase = mysql.connector.connect(
+  host = DB_HOST,
+  user ="user",
+  passwd ="password"
+)
+
+# dataBase.close()
+
 
 #### CMD Helper
 ## Permet de sortir la signature d'un certificat en JSON
@@ -144,8 +154,9 @@ def get_lan_ip() -> str:
     return link['addr']
 
 def database_user_already_sign(username:str) -> bool:
-    connection=sqlite3.connect(DB_NAME)
-    cursor=connection.cursor()
+    # connection=sqlite3.connect(DB_NAME)
+    # cursor=connection.cursor()
+    cursor = dataBase.cursor()
     data = ""
     try:
         cursor.execute(f"SELECT user_id FROM cert WHERE user_id = '{username}';")
@@ -158,8 +169,9 @@ def database_user_already_sign(username:str) -> bool:
     return True
 
 def database_user_id(username:str) -> str:
-    connection=sqlite3.connect(DB_NAME)
-    cursor=connection.cursor()
+    # connection=sqlite3.connect(DB_NAME)
+    # cursor=connection.cursor()
+    cursor = dataBase.cursor()
     data = ""
     try:
         cursor.execute(f"SELECT id_row FROM users WHERE user_id = '{username}';")
@@ -173,8 +185,9 @@ def database_user_id(username:str) -> str:
     return str(data[0][0])
 
 def database_user_password(username:str) -> str:
-    connection=sqlite3.connect(DB_NAME)
-    cursor=connection.cursor()
+    # connection=sqlite3.connect(DB_NAME)
+    # cursor=connection.cursor()
+    cursor = dataBase.cursor()
     data = ""
     try:
         cursor.execute(f"SELECT user_pass FROM users WHERE user_id = '{username}';")
@@ -187,8 +200,9 @@ def database_user_password(username:str) -> str:
     return str(data[0][0])
 
 def database_user_fingerprint(username:str,fingerprint:str) -> None:
-    connection=sqlite3.connect(DB_NAME)
-    cursor=connection.cursor()
+    # connection=sqlite3.connect(DB_NAME)
+    # cursor=connection.cursor()
+    cursor = dataBase.cursor()
     print(f"cur : {cursor}, user : {username}, fing : {fingerprint}")
     try:
         cursor.execute(f"INSERT INTO cert (user_id,user_fingerprint) VALUES('{username}', '{fingerprint}');")
@@ -200,8 +214,9 @@ def database_user_fingerprint(username:str,fingerprint:str) -> None:
     cursor.close()
 
 def get_groups_from_database(username:str) -> str:
-    connection=sqlite3.connect(DB_NAME)
-    cursor=connection.cursor()
+    # connection=sqlite3.connect(DB_NAME)
+    # cursor=connection.cursor()
+    cursor = dataBase.cursor()
     data = ""
     try:
         rqst = f"SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id == \"{username}\" );"
@@ -249,6 +264,9 @@ def runcmd(cmd, verbose=False, *args, **kwargs) -> str:
     # if verbose:
     #     print(std_out.strip(), std_err)
     return std_err if(not verbose) else str(std_out + std_err)
+
+def exitdatabase() -> None:
+    dataBase.close()
     
 if __name__ == "__main__":
     try:
@@ -266,3 +284,9 @@ if __name__ == "__main__":
     # openssl req -new -x509 -key private.pem -out public.pem -days 360
     #####
     appFlask.run(ssl_context=("public.pem","private.pem"),port=args.port)
+    atexit.register(exitdatabase)
+
+
+
+
+    

@@ -66,7 +66,7 @@ if __name__ == "__main__":
     action(type="omfwd"
             target="{args.ip}"
             port="{args.port}"
-                protocol="udp" 
+                protocol="tcp" 
                 template="SendRemote" 
                 queue.SpoolDirectory="/var/spool/rsyslog"
                 queue.FileName="remote"
