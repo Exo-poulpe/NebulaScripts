@@ -30,7 +30,7 @@ DB_NAME = "databses.db"
 # GRANT ALL PRIVILEGES ON *.* TO 'light'@'%' WITH GRANT OPTION;
 dataBase = mysql.connector.connect(
   host = DB_HOST,
-  user ="ligth",
+  user ="light",
   passwd ="Jesuisunetartine#22",
   database = 'vpn'
 )
