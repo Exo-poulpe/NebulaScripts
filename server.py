@@ -53,8 +53,8 @@ def root_cert():
 @jwt_required()
 def cert():
     current_user = get_jwt_identity()
-    # if database_user_already_sign(current_user):
-    #     return jsonify({"error":"cert already build"}), 401
+    if database_user_already_sign(current_user):
+        return jsonify({"error":"cert already build"}), 401
     try: file_byte = request.get_data()
     except KeyError as err:
         print(err)
@@ -103,7 +103,6 @@ def login():
     return jsonify({"message" : "Invalid credentials"}), 401
 
 ########### HELPERS 
-
 
 def str_to_file(filename:str,data:str) -> None:
     f = open(filename,"w")
@@ -201,7 +200,7 @@ def database_user_fingerprint(username:str,fingerprint:str) -> None:
         print(f"ID already exist : {unique_id_err}")
     cursor.close()
 
-def get_groups_from_database(username:str) -> []:
+def get_groups_from_database(username:str) -> str:
     connection=sqlite3.connect(DB_NAME)
     cursor=connection.cursor()
     data = ""
@@ -216,7 +215,11 @@ def get_groups_from_database(username:str) -> []:
     cursor.close()
     if(data == []):
         return ""
-    return [''.join(i) for i in data]
+    res = []
+    for elem in [''.join(i) for i in data]:
+        res.append(f"- {elem}\n\t")
+    return ''.join(res)
+
 
 
 def create_cert(filename:str,username:str,groups:str,ip:str = "192.168.1.1/24",duration: int=8766) -> str:
@@ -224,7 +227,7 @@ def create_cert(filename:str,username:str,groups:str,ip:str = "192.168.1.1/24",d
     # print(filename)
     # exit(1)
     cmd = f"./nebula-cert sign -in-pub \"{filename}\" -name \"{username}\" -groups \"{groups}\" -ip \"{ip}\" -duration {str(duration)}h"
-    # print(f"{cmd}")
+    print(f"{cmd}")
     data = runcmd(cmd)
     # print(data)
     data = runcmd(f"./nebula-cert print -json -path \"{username}.crt\"",verbose=True)
