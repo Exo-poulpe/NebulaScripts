@@ -1,3 +1,7 @@
+#!/bin/python3
+# sudo apt-get install libffi6 libffi-dev
+# sudo apt-get install rustc
+# sudo apt-get install build-essential libssl-dev libffi-dev python-dev
 from flask import Flask, redirect, url_for, render_template, request, session, jsonify, send_file
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
@@ -21,10 +25,11 @@ DB_PORT = 3306
 DB_HOST = "192.168.122.22"
 DB_NAME = "databses.db"
 
+# CREATE USER 'light'@'192.168.122.2' IDENTIFIED BY 'Jesuisunetartine#22';
 dataBase = mysql.connector.connect(
   host = DB_HOST,
-  user ="user",
-  passwd ="password"
+  user ="ligth",
+  passwd ="Jesuisunetartine#22"
 )
 
 # dataBase.close()
