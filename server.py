@@ -258,9 +258,9 @@ if __name__ == "__main__":
     except:
         parser.print_help()
         exit(1)
-    
-    # tmp = bcrypt.gensalt()
-    # print(tmp)
-    # tmp = bcrypt.hashpw(bytes("poulpe","utf-8"), tmp)
-    # print(tmp)
-    appFlask.run(ssl_context=("pub.csr","private.pem"),port=args.port)
+    ##### CMD (Create self sign cert)
+    # openssl genrsa -out private.pem 4096
+    ##
+    # openssl req -new -x509 -key private.pem -out public.pem -days 360
+    #####
+    appFlask.run(ssl_context=("public.pem","private.pem"),port=args.port)

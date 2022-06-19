@@ -4,5 +4,6 @@ __pycache__
 *.pub
 *.crt
 *.key
+*.cert
 nebula
 nebula-cert
