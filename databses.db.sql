@@ -24,3 +24,16 @@ CREATE TABLE IF NOT EXISTS groups_member (
 	CONSTRAINT groups_member_user
 	FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
+
+INSERT INTO users (user_id,user_pass,user_pass_salt)VALUES
+('538c6f6f-bd69-4553-9a05-67adfee79cdc','$2b$12$J26Fzf5rpGV3SNQCq6638uMIUiAvbRYW.KvNlOhG/7mafCom/zDXG','$2b$12$J26Fzf5rpGV3SNQCq6638u'),
+('31841e1a-ae71-46fc-9d78-847786148749','$2b$12$mJEAIMw7kpgRZsc46rkgpep7p0emoi2Dcrm691tWE/0g.5SGs6gea','$2b$12$mJEAIMw7kpgRZsc46rkgpe');
+
+INSERT INTO groups (group_id,name)VALUES
+('1', 'Dev'),
+('2', 'Secretariat'),
+('3', 'Admin'),
+('4', 'Network'),
+('5', 'Manager'),
+('6', 'Marketing'),
+('7', 'User');
