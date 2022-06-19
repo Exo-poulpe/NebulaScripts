@@ -26,10 +26,13 @@ DB_HOST = "192.168.122.22"
 DB_NAME = "databses.db"
 
 # CREATE USER 'light'@'192.168.122.2' IDENTIFIED BY 'Jesuisunetartine#22';
+# CREATE USER 'light'@'%' IDENTIFIED BY 'Jesuisunetartine#22';
+# GRANT ALL PRIVILEGES ON *.* TO 'light'@'%' WITH GRANT OPTION;
 dataBase = mysql.connector.connect(
   host = DB_HOST,
   user ="ligth",
-  passwd ="Jesuisunetartine#22"
+  passwd ="Jesuisunetartine#22",
+  database = 'vpn'
 )
 
 # dataBase.close()
@@ -288,7 +291,7 @@ if __name__ == "__main__":
     ##
     # openssl req -new -x509 -key private.pem -out public.pem -days 360
     #####
-    appFlask.run(ssl_context=("public.pem","private.pem"),port=args.port)
+    appFlask.run(host="0.0.0.0",ssl_context=("public.pem","private.pem"),port=args.port)
     atexit.register(exitdatabase)
 
 
