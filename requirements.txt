@@ -23,7 +23,6 @@ pyOpenSSL==22.0.0
 pysqlite3==0.4.7
 scikit-learn==1.1.1
 scipy==1.8.1
-sklearn==0.0
 threadpoolctl==3.1.0
 urllib3==1.26.9
 waitress==2.1.1
