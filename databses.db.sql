@@ -7,20 +7,20 @@ CREATE TABLE IF NOT EXISTS cert (
 	PRIMARY KEY(user_id)
 );
 CREATE TABLE IF NOT EXISTS groups (
-	group_id	INT NOT NULL,
+	group_id	INT UNSIGNED NOT NULL,
 	name	VARCHAR(128) NOT NULL,
 	PRIMARY KEY(group_id)
 );
-CREATE TABLE IF NOT EXISTS groups_member (
-	user_id	INT NOT NULL,
-	group_id	INT NOT NULL,
-	CONSTRAINT groups_member_user
-	FOREIGN KEY(user_id) REFERENCES users(user_id)
-);
 CREATE TABLE IF NOT EXISTS users (
-	id_row	INT NOT NULL,
+	id_row	INT UNSIGNED AUTOINCREMENT NOT NULL,
 	user_id	VARCHAR(128) NOT NULL UNIQUE,
 	user_pass	VARCHAR(128) NOT NULL,
 	user_pass_salt	VARCHAR(128) NOT NULL,
-	PRIMARY KEY(id_row AUTOINCREMENT)
+	PRIMARY KEY(id_row)
+);
+CREATE TABLE IF NOT EXISTS groups_member (
+	user_id	VARCHAR(128) NOT NULL,
+	group_id	INT NOT NULL,
+	CONSTRAINT groups_member_user
+	FOREIGN KEY(user_id) REFERENCES users(user_id)
 );
