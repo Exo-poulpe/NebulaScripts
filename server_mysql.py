@@ -135,7 +135,7 @@ def file_to_str(filename:str) -> str:
 
 def database_to_config(username:str) -> None:
     groups = format_groups(get_groups_from_database(username))
-    vpn_ip = f"192.168.1.{database_user_id(username)}/24"
+    vpn_ip = get_lan_ip() # f"192.168.1.{database_user_id(username)}/24"
     addr_house_pub = get_lan_ip()
     is_lighthouse = False
     network_name = "netbula1"
@@ -246,7 +246,7 @@ def get_groups_from_database(username:str) -> List[str]:
 def format_groups(data:List[str]) -> str:
     res = []
     for elem in [''.join(i) for i in data]:
-        res.append(f"- {elem}\n\t")
+        res.append(f"- {elem}\n    ")
     return ''.join(res)
 
 
