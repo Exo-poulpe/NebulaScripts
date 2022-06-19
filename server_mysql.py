@@ -135,7 +135,7 @@ def file_to_str(filename:str) -> str:
 
 def database_to_config(username:str) -> None:
     groups = format_groups(get_groups_from_database(username))
-    vpn_ip = get_lan_ip() # f"192.168.1.{database_user_id(username)}/24"
+    vpn_ip = get_vpn_ip() # f"192.168.1.{database_user_id(username)}/24"
     addr_house_pub = get_lan_ip()
     is_lighthouse = False
     network_name = "netbula1"
@@ -149,8 +149,8 @@ def database_to_config(username:str) -> None:
     fstr = fstr.replace("<network_name>", f"{network_name}")
     fstr = fstr.replace("<host_ip>", f"#" if is_lighthouse else f"- \"{addr_house_pub}\"" )
     fstr = fstr.replace("<i_am_lighthouse>", "true" if is_lighthouse else "false")
-    fstr = fstr.replace("<vpn_ip>", f"{addr_house_pub}")
-    fstr = fstr.replace("<public_ip_lighthouse>", f"{addr_house_pub}")
+    fstr = fstr.replace("<vpn_ip>", f"{vpn_ip}")
+    fstr = fstr.replace("<public_ip_lighthouse>", f"{vpn_ip}")
     fstr = fstr.replace("<lighthouse_port>", f"{port_house}")
     fstr = fstr.replace("<key_path>", f"{key_path}")
     fstr = fstr.replace("<cert_path>", f"{cert_path}")
@@ -162,6 +162,11 @@ def database_to_config(username:str) -> None:
 def get_lan_ip() -> str:
     res = ""
     link = netifaces.ifaddresses('eth0')[netifaces.AF_INET]
+    return link[0]["addr"]
+
+def get_vpn_ip() -> str:
+    res = ""
+    link = netifaces.ifaddresses('netbula1')[netifaces.AF_INET]
     return link[0]["addr"]
 
 def database_user_already_sign(username:str) -> bool:
