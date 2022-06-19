@@ -100,7 +100,6 @@ def config():
     database_to_config(str(current_user))
     # str(file_byte).save(secure_filename(f"{current_user}.pub"))
     return send_file(f"{current_user}.yaml"), 200
-   
 
 @appFlask.route('/login', methods=['POST'])
 def login():
@@ -252,7 +251,8 @@ def format_groups(data:List[str]) -> str:
 
 
 
-def create_cert(filename:str,username:str,groups:str,ip:str = "192.168.1.1/24",duration: int=8760) -> str:
+# 6 month : 4383, 1 year : 8766
+def create_cert(filename:str,username:str,groups:str,ip:str = "192.168.1.1/24",duration: int=4383) -> str:
     # runcmd(f"./nebula-cert sign -ca-crt ca.crt -ca-key ca.key -in-pub {filename} -name \"{username}\" -ip \"192.168.1.1/24\"")
     # print(filename)
     # exit(1)
