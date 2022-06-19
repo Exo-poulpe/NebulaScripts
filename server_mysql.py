@@ -82,8 +82,9 @@ def cert():
     
     # print(f"{get_groups_from_database(current_user)}")
     
-    print([''.join(i) for i in get_groups_from_database(current_user)])
-    fingerprint = create_cert(file_name,current_user,[''.join(i) for i in get_groups_from_database(current_user)]),f"192.168.1.{database_user_id(current_user)}/24")
+    tmp_groups = ",".join([''.join(i) for i in get_groups_from_database(current_user)])
+    print(f"Res : {tmp_groups}")
+    fingerprint = create_cert(file_name,current_user,tmp_groups,f"192.168.1.{database_user_id(current_user)}/24")
     print(fingerprint)
     database_user_fingerprint(current_user,fingerprint)
     print("db update")
@@ -133,14 +134,14 @@ def file_to_str(filename:str) -> str:
     return ''.join(f.readlines())
 
 def database_to_config(username:str) -> None:
-    groups = get_groups_from_database(username)
+    groups = format_groups(get_groups_from_database(username))
     vpn_ip = f"192.168.1.{database_user_id(username)}/24"
-    addr_house_pub = "192.168.1.225"# get_lan_ip()
+    addr_house_pub = get_lan_ip()
     is_lighthouse = False
     network_name = "netbula1"
     port_house = 4242
     cert_path = f"{username}.crt"
-    key_path = f"{username}.key"
+    key_path = f"{username}.priv"
     public_key_house = f"ca.crt"
 
     runcmd('wget "' + config_lnk + '"', verbose=False)
@@ -223,13 +224,12 @@ def database_user_fingerprint(username:str,fingerprint:str) -> None:
     #     print(f"ID already exist : {unique_id_err}")
     cursor.close()
 
-def get_groups_from_database(username:str) -> str:
+def get_groups_from_database(username:str) -> List[str]:
     # connection=sqlite3.connect(DB_NAME)
     # cursor=connection.cursor()
     cursor = dataBase.cursor()
     data = ""
     try:
-
         # SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id = "54c914d9-1839-48bd-bb83-703ba47ded46" );
         rqst = f"SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id = \"{username}\" );"
         cursor.execute(f"{rqst}")
@@ -241,6 +241,9 @@ def get_groups_from_database(username:str) -> str:
     cursor.close()
     if(data == []):
         return ""
+    return data[0]
+    
+def format_groups(data:List[str]) -> str:
     res = []
     for elem in [''.join(i) for i in data]:
         res.append(f"- {elem}\n\t")
@@ -248,7 +251,7 @@ def get_groups_from_database(username:str) -> str:
 
 
 
-def create_cert(filename:str,username:str,groups:str,ip:str = "192.168.1.1/24",duration: int=8766) -> str:
+def create_cert(filename:str,username:str,groups:str,ip:str = "192.168.1.1/24",duration: int=8760) -> str:
     # runcmd(f"./nebula-cert sign -ca-crt ca.crt -ca-key ca.key -in-pub {filename} -name \"{username}\" -ip \"192.168.1.1/24\"")
     # print(filename)
     # exit(1)
