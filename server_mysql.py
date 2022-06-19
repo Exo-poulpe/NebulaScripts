@@ -168,7 +168,7 @@ def database_user_already_sign(username:str) -> bool:
     data = ""
     try:
         cursor.execute(f"SELECT user_id FROM cert WHERE user_id = '{username}';")
-    except:
+    except Exception as err:
         return False
     data=cursor.fetchall()
     cursor.close()
@@ -183,7 +183,7 @@ def database_user_id(username:str) -> str:
     data = ""
     try:
         cursor.execute(f"SELECT id_row FROM users WHERE user_id = '{username}';")
-    except Any as err:
+    except Exception as err:
         return err
     # print(data)
     data=cursor.fetchall()
@@ -199,7 +199,7 @@ def database_user_password(username:str) -> str:
     data = ""
     try:
         cursor.execute(f"SELECT user_pass FROM users WHERE user_id = '{username}';")
-    except Any as err:
+    except Exception as err:
         return None
     data=cursor.fetchall()
     cursor.close()
@@ -215,7 +215,7 @@ def database_user_fingerprint(username:str,fingerprint:str) -> None:
     try:
         cursor.execute(f"INSERT INTO cert (user_id,user_fingerprint) VALUES('{username}', '{fingerprint}');")
         connection.commit()
-    except Any as err:
+    except Exception as err:
         print(f"Error : {err}")
     # except sqlite3.IntegrityError as unique_id_err:
     #     print(f"ID already exist : {unique_id_err}")
