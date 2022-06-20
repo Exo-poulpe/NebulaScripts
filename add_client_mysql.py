@@ -83,10 +83,12 @@ if __name__ == "__main__":
     if  res != None:
         print(f"Error add user : {res}")
         exit(1)
+    dataBase.commit()
     res = database_add_groups_for_user(args.user, list(args.groups.split(",")))
     if  res != None:
         print(f"Error add groups {res}")
         exit(1)
+    dataBase.commit()
     print(f"User : {args.user} added")
     print(f"Passwd : {args.passw}")
 
