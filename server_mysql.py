@@ -145,7 +145,7 @@ def database_to_config(username:str) -> None:
     key_path = f"{username}.priv"
     public_key_house = f"ca.crt"
 
-    if not os.path.exists(file_name):
+    if not os.path.exists("config.orig.yaml"):
         runcmd('wget "' + config_lnk + '"', verbose=False)
     fstr = file_to_str("config.orig.yaml")
     fstr = fstr.replace("<network_name>", f"{network_name}")
