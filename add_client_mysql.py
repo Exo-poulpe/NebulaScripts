@@ -24,7 +24,7 @@ def database_add_user_id(user_id:str,passw:str) -> str():
         passwd = bcrypt.hashpw(bytes(passw,"utf-8"), salt)
         # print(f"{passwd}   {salt}")
         cursor.execute(f"INSERT INTO users (user_id,user_pass,user_pass_salt) VALUES ('{user_id}','{passwd.decode('utf-8')}','{salt.decode('utf-8') }');")
-        connection.commit()
+        dataBase.commit()
     except Exception as err:
         return err
     cursor.close()
@@ -41,7 +41,7 @@ def database_add_groups_for_user(user_id:str,groups:List[str]) -> bool:
             cursor.execute(f"SELECT group_id FROM groups WHERE name = '{grp}';")
             tmp_id = cursor.fetchall()[0][0]
             cursor.execute(f"INSERT INTO groups_member (user_id,group_id) VALUES ('{user_id}','{tmp_id}');")
-            connection.commit()
+            dataBase.commit()
     except Exception as err:
         return res
     cursor.close()
@@ -83,12 +83,12 @@ if __name__ == "__main__":
     if  res != None:
         print(f"Error add user : {res}")
         exit(1)
-    dataBase.commit()
+    
     res = database_add_groups_for_user(args.user, list(args.groups.split(",")))
     if  res != None:
         print(f"Error add groups {res}")
         exit(1)
-    dataBase.commit()
+        
     print(f"User : {args.user} added")
     print(f"Passwd : {args.passw}")
 
