@@ -77,7 +77,6 @@ if __name__ == "__main__":
     contents = []
     with open(config, "r+") as f:
         contents = f.readlines()
-        print(contents)
         idx = contents.index("  blocklist:\n")
         contents.insert(idx+1,f"    - {database_user_fingerprint(uuid)}\n")
 
