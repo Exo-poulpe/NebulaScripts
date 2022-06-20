@@ -76,20 +76,13 @@ def cert():
         return jsonify({"error":"cert already build"}), 401
     try: file_byte = request.get_data()
     except KeyError as err:
-        print(err)
+        print(err,file = sys.stderr)
         return jsonify({"error":"file upload"}), 401
-    # str(file_byte).save(secure_filename(f"{current_user}.pub"))
     file_name = f"{current_user}.pub"
     open(file_name,"wb").write(file_byte)
-    
-    # print(f"{get_groups_from_database(current_user)}")
-    
     tmp_groups = ",".join([''.join(i) for i in get_groups_from_database(current_user)])
-    print(f"Res : {tmp_groups}")
     fingerprint = create_cert(file_name,current_user,tmp_groups,f"192.168.1.{database_user_id(current_user)}/24")
-    print(fingerprint)
     database_user_fingerprint(current_user,fingerprint)
-    print("db update")
     return send_file(f"{current_user}.crt"), 200
    
 
@@ -97,9 +90,7 @@ def cert():
 @jwt_required()
 def config():
     current_user = get_jwt_identity()
-    print(current_user)
     database_to_config(str(current_user))
-    # str(file_byte).save(secure_filename(f"{current_user}.pub"))
     return send_file(f"{current_user}.yaml"), 200
 
 @appFlask.route('/login', methods=['POST'])
@@ -111,9 +102,9 @@ def login():
         username = info["username"]
         password = info["password"]
     except KeyError as err:
-        print(err)
+        print(err,file = sys.stderr)
         return jsonify({"message" : "Invalid credentials"}), 401
-    print(f"u : {username}, p : {password}")
+    print(f"u : {username}",file = sys.stderr)
     if username:
         pass_tmp = database_user_password(username)
         if(not pass_tmp): # If password is null
@@ -136,7 +127,7 @@ def file_to_str(filename:str) -> str:
 
 def database_to_config(username:str) -> None:
     groups = format_groups(get_groups_from_database(username))
-    vpn_ip = get_vpn_ip() # f"192.168.1.{database_user_id(username)}/24"
+    vpn_ip = get_vpn_ip()
     addr_house_pub = get_lan_ip()
     is_lighthouse = False
     network_name = "netbula1"
@@ -172,8 +163,6 @@ def get_vpn_ip() -> str:
     return link[0]["addr"]
 
 def database_user_already_sign(username:str) -> bool:
-    # connection=sqlite3.connect(DB_NAME)
-    # cursor=connection.cursor()
     cursor = dataBase.cursor()
     data = ""
     try:
@@ -187,15 +176,12 @@ def database_user_already_sign(username:str) -> bool:
     return True
 
 def database_user_id(username:str) -> str:
-    # connection=sqlite3.connect(DB_NAME)
-    # cursor=connection.cursor()
     cursor = dataBase.cursor()
     data = ""
     try:
         cursor.execute(f"SELECT id_row FROM users WHERE user_id = '{username}';")
     except Exception as err:
         return err
-    # print(data)
     data=cursor.fetchall()
     cursor.close()
     if(data == []):
@@ -203,8 +189,6 @@ def database_user_id(username:str) -> str:
     return str(data[0][0])
 
 def database_user_password(username:str) -> str:
-    # connection=sqlite3.connect(DB_NAME)
-    # cursor=connection.cursor()
     cursor = dataBase.cursor()
     data = ""
     try:
@@ -218,30 +202,23 @@ def database_user_password(username:str) -> str:
     return str(data[0][0])
 
 def database_user_fingerprint(username:str,fingerprint:str) -> None:
-    # connection=sqlite3.connect(DB_NAME)
-    # cursor=connection.cursor()
     cursor = dataBase.cursor()
     print(f"cur : {cursor}, user : {username}, fing : {fingerprint}")
     try:
         cursor.execute(f"INSERT INTO cert (user_id,user_fingerprint) VALUES('{username}', '{fingerprint}');")
         dataBase.commit()
     except Exception as err:
-        print(f"Error : {err}")
-    # except sqlite3.IntegrityError as unique_id_err:
-    #     print(f"ID already exist : {unique_id_err}")
+        print(f"Error : {err}",file = sys.stderr)
     cursor.close()
 
 def get_groups_from_database(username:str) -> List[str]:
-    # connection=sqlite3.connect(DB_NAME)
-    # cursor=connection.cursor()
     cursor = dataBase.cursor()
     data = ""
     try:
-        # SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id = "54c914d9-1839-48bd-bb83-703ba47ded46" );
         rqst = f"SELECT G.name FROM groups as G WHERE group_id IN ( SELECT GM.group_id FROM groups_member as GM WHERE GM.user_id = \"{username}\" );"
         cursor.execute(f"{rqst}")
     except Exception as err:
-        print(f"Error {err}")
+        print(f"Error {err}",file = sys.stderr)
         data = None
         return data
     data=cursor.fetchall()
@@ -260,15 +237,9 @@ def format_groups(data:List[str]) -> str:
 
 # 6 month : 4383, 1 year : 8766
 def create_cert(filename:str,username:str,groups:str,ip:str = "192.168.1.1/24",duration: int=4383) -> str:
-    # runcmd(f"./nebula-cert sign -ca-crt ca.crt -ca-key ca.key -in-pub {filename} -name \"{username}\" -ip \"192.168.1.1/24\"")
-    # print(filename)
-    # exit(1)
     cmd = f"./nebula-cert sign -in-pub \"{filename}\" -name \"{username}\" -groups \"{groups}\" -ip \"{ip}\" -duration {str(duration)}h"
-    print(f"{cmd}")
     data = runcmd(cmd)
-    # print(data)
     data = runcmd(f"./nebula-cert print -json -path \"{username}.crt\"",verbose=True)
-    # print(data)
     return json.loads(data)["fingerprint"]
 
 def identity(payload):
@@ -284,8 +255,6 @@ def runcmd(cmd, verbose=False, *args, **kwargs) -> str:
         shell=True
     )
     std_out, std_err = process.communicate()
-    # if verbose:
-    #     print(std_out.strip(), std_err)
     return std_err if(not verbose) else str(std_out + std_err)
 
 def exitdatabase() -> None:

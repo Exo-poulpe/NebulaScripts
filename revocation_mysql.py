@@ -94,6 +94,6 @@ if __name__ == "__main__":
     # https://github.com/slackhq/nebula/issues/304
     pids = psutil.process_iter()
     for pid in pids:
-        if pid.name == "nebula":  
+        if pid.name == "nebula":
             os.kill(pid.pid,signal.SIGHUP)
             break 
