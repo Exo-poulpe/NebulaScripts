@@ -8,9 +8,9 @@ import bcrypt
 import sqlite3
 import argparse
 import json
-import psutil  
-import os  
-import signal 
+import psutil
+import os
+import signal
 import mysql.connector
 
 
@@ -92,8 +92,8 @@ if __name__ == "__main__":
 
     # Reload config in nebula process
     # https://github.com/slackhq/nebula/issues/304
-    pids = psutil.get_pid_list()  
-    for pid in pids:  
+    pids = psutil.process_iter()
+    for pid in pids:
         if psutil.Process(pid).name == "nebula":  
             os.kill(pid,signal.SIGHUP)
             break 
