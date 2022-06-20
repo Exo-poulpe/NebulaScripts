@@ -115,7 +115,7 @@ def login():
             return jsonify(access_token=access_token)
     return jsonify({"message" : "Invalid credentials"}), 401
 
-########### HELPERS 
+########### HELPERS
 
 def str_to_file(filename:str,data:str) -> None:
     f = open(filename,"w")

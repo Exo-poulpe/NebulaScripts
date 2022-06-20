@@ -79,7 +79,7 @@ if __name__ == "__main__":
         contents = f.readlines()
         print(contents)
         idx = contents.index("  blocklist:\n")
-        contents.insert(idx+1,f"\t- {database_user_fingerprint(uuid)}\n")
+        contents.insert(idx+1,f"    - {database_user_fingerprint(uuid)}\n")
 
     database_user_invalidate(uuid)
 
