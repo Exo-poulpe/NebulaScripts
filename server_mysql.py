@@ -301,11 +301,13 @@ if __name__ == "__main__":
     except:
         parser.print_help()
         exit(1)
+    
     ##### CMD (Create self sign cert)
     # openssl genrsa -out private.pem 4096
     ##
     # openssl req -new -x509 -key private.pem -out public.pem -days 360
     #####
+    # python3 server_mysql.py > server.log 2>&1
     appFlask.run(host="0.0.0.0",ssl_context=("public.pem","private.pem"),port=args.port)
     atexit.register(exitdatabase)
 

@@ -35,7 +35,6 @@ def database_user_fingerprint(username:str) -> None:
     return str(data[0][0])
 
 def database_user_invalidate(username:str) -> None:
-    
     cursor = dataBase.cursor()
     try:
         cursor.execute(f"UPDATE cert SET user_validate = 0 WHERE user_id = '{username}';")
@@ -78,7 +77,7 @@ if __name__ == "__main__":
     contents = []
     with open(config, "r+") as f:
         contents = f.readlines()
-        # print(contents)
+        print(contents)
         idx = contents.index("  blocklist:\n")
         contents.insert(idx+1,f"\t- {database_user_fingerprint(uuid)}\n")
 
