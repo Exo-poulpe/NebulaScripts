@@ -23,7 +23,7 @@ def database_add_user_id(user_id:str,passw:str) -> str():
         salt = bcrypt.gensalt()
         passwd = bcrypt.hashpw(bytes(passw,"utf-8"), salt)
         # print(f"{passwd}   {salt}")
-        cursor.execute(f"INSERT INTO users ('user_id','user_pass','user_pass_salt') VALUES (\"{user_id}\",\"{passwd.decode('utf-8')}\",\"{salt.decode('utf-8') }\");")
+        cursor.execute(f"INSERT INTO users ('user_id','user_pass','user_pass_salt') VALUES ('{user_id}','{passwd.decode('utf-8')}','{salt.decode('utf-8') }');")
         connection.commit()
     except Exception as err:
         return err
@@ -59,8 +59,8 @@ if __name__ == "__main__":
         parser = MyParser()
         parser.add_argument('--user', metavar='UUID', type=str,required=False, help='The username for the client (if empty random UUID generated)')
         parser.add_argument('--passw', metavar='Password', type=str,required=True, help='The password of the client')
-        parser.add_argument('--ip',metavar='database ip', default=DB_HOST,type=str,help='IP of the server')
-        parser.add_argument('--port',metavar='database port', default=DB_PORT,type=int,help='port+ of the server')
+        parser.add_argument('--ip',metavar='database ip', default=DB_HOST,required=False,type=str,help='IP of the server')
+        parser.add_argument('--port',metavar='database port', default=DB_PORT,required=False,type=int,help='port+ of the server')
         parser.add_argument('--groups',metavar='groups', default="User",required=True,type=str,help='The groups for the user')
         args = parser.parse_args()
     except:
