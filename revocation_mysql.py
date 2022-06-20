@@ -11,6 +11,7 @@ import json
 import psutil  
 import os  
 import signal 
+import mysql.connector
 
 
 DB_PORT = 3306
@@ -22,9 +23,7 @@ def database_user_fingerprint(username:str) -> None:
     # connection=sqlite3.connect(DB_NAME)
     # cursor=connection.cursor()
     cursor = dataBase.cursor()
-    try: 
-        if len(username) != 36:
-            raise sqlite3.OperationalError()
+    try:
         cursor.execute(f"SELECT user_fingerprint FROM cert WHERE user_id = '{username}';")
     except Exception() as err:
         print(f"Error : {err}")
@@ -36,12 +35,9 @@ def database_user_fingerprint(username:str) -> None:
     return str(data[0][0])
 
 def database_user_invalidate(username:str) -> None:
-    # connection=sqlite3.connect(DB_NAME)
-    # cursor=connection.cursor()
+    
     cursor = dataBase.cursor()
-    try: 
-        if len(username) != 36:
-            raise sqlite3.OperationalError()
+    try:
         cursor.execute(f"UPDATE cert SET user_validate = 0 WHERE user_id = '{username}';")
         dataBase.commit()
     except Exception() as err:
