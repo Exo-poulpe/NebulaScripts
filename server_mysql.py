@@ -222,7 +222,7 @@ def database_user_fingerprint(username:str,fingerprint:str) -> None:
     print(f"cur : {cursor}, user : {username}, fing : {fingerprint}")
     try:
         cursor.execute(f"INSERT INTO cert (user_id,user_fingerprint) VALUES('{username}', '{fingerprint}');")
-        connection.commit()
+        dataBase.commit()
     except Exception as err:
         print(f"Error : {err}")
     # except sqlite3.IntegrityError as unique_id_err:

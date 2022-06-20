@@ -18,8 +18,6 @@ DB_HOST = "192.168.122.22"
 DB_NAME = "databses.db"
 
 
-
-
 def database_user_fingerprint(username:str) -> None:
     # connection=sqlite3.connect(DB_NAME)
     # cursor=connection.cursor()
@@ -45,7 +43,7 @@ def database_user_invalidate(username:str) -> None:
         if len(username) != 36:
             raise sqlite3.OperationalError()
         cursor.execute(f"UPDATE cert SET user_validate = 0 WHERE user_id = '{username}';")
-        connection.commit()
+        dataBase.commit()
     except Exception() as err:
         print(f"Error : {err}")
         print(f"ID already exist : {unique_id_err}")

@@ -16,6 +16,7 @@ mysql-connector-python==8.0.29
 netifaces==0.11.0
 numpy==1.22.4
 protobuf==4.21.1
+psutil==5.9.1
 pycparser==2.21
 PyJWT==2.4.0
 PyMySQL==1.0.2
