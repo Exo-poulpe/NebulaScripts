@@ -11,6 +11,7 @@ from typing import Tuple
 from typing import List
 from datetime import timedelta
 import ssl
+import os
 import uuid
 import flask
 import subprocess
@@ -144,7 +145,8 @@ def database_to_config(username:str) -> None:
     key_path = f"{username}.priv"
     public_key_house = f"ca.crt"
 
-    runcmd('wget "' + config_lnk + '"', verbose=False)
+    if not os.path.exists(file_name):
+        runcmd('wget "' + config_lnk + '"', verbose=False)
     fstr = file_to_str("config.orig.yaml")
     fstr = fstr.replace("<network_name>", f"{network_name}")
     fstr = fstr.replace("<host_ip>", f"#" if is_lighthouse else f"- \"{vpn_ip}\"" )
