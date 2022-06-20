@@ -60,6 +60,7 @@ if __name__ == "__main__":
         parser.add_argument('--database', metavar='Database file',default=DB_NAME, type=str,required=False, help='The databases sqlite3 file')
         parser.add_argument('--ip', metavar='Database ip',default=DB_HOST, type=str,required=False, help='The databases ip')
         parser.add_argument('--port', metavar='Database port',default=DB_PORT, type=str,required=False, help='The databases port')
+        parser.add_argument('--config', metavar='VPN config file',default="config.yaml", type=str,required=False, help='The config file for lighthouse')
         args = parser.parse_args()
     except:
         exit(1)
@@ -73,7 +74,7 @@ if __name__ == "__main__":
     )
     
     uuid = args.user
-    config = "config.yaml" if len(sys.argv) == 2 else sys.argv[2]
+    config = args.config
     contents = []
     with open(config, "r+") as f:
         contents = f.readlines()
